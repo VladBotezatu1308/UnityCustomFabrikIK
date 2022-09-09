@@ -1,6 +1,4 @@
-﻿
-using UnityEngine;
-
+﻿using UnityEngine;
 
 public class IKNode : MonoBehaviour
 {
@@ -20,7 +18,7 @@ public class IKNode : MonoBehaviour
         Parent = parent;
         TargetPosition = transform.position;
 
-        if (transform.childCount > 0)
+        if (transform.childCount > 0 && depth > 0)
         {
             bool foundChildNode = false;
             foreach (Transform child in transform)
@@ -33,7 +31,7 @@ public class IKNode : MonoBehaviour
                 }
             }
 
-            if (!foundChildNode && depth > 0)
+            if (!foundChildNode)
             {
                 Child = transform.GetChild(0).gameObject.AddComponent<IKNode>();
                 Child.Init(this, depth - 1);

@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
 using UnityEngine;
@@ -20,7 +19,7 @@ public class FabrikIK : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private Transform pole;
 
-    [SerializeField] private List<IKNode> nodes;
+    [SerializeField] private List<IKNode> nodes = new List<IKNode>();
     private float m_totalLength => nodes.Aggregate(0.0f, (agg, node) => agg + node.Length);
 
     private List<Vector3> m_Positions;
@@ -37,24 +36,27 @@ public class FabrikIK : MonoBehaviour
     [Button("Setup IK Rig")]
     void SetupIK()
     {
+        int setupDepth = depth;
         if (root == null && !TryGetComponent(out root))
         {
             root = gameObject.AddComponent<IKNode>();
         }
         
-        root.Init(null, depth);
+        root.Init(null, setupDepth);
         
         nodes.Clear();
+        
         IKNode currentNode = root;
-        while (currentNode != null)
+        do
         {
+            setupDepth--;
             nodes.Add(currentNode);
-            
-            if (currentNode.Child == null)
+
+            if (currentNode.Child == null || setupDepth <= 0)
                 endEffector = currentNode;
-            
+
             currentNode = currentNode.Child;
-        }
+        } while (currentNode != null && setupDepth > 0);
 
     }
 
